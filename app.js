@@ -171,12 +171,15 @@ async function startCamera() {
     setStatus("Opening camera", "busy");
     state.stream = await navigator.mediaDevices.getUserMedia({
       video: {
-        facingMode: { ideal: "environment" },
-        width: { ideal: 1920 },
-        height: { ideal: 1080 }
-      },
-      audio: false
-    });
+  facingMode: { ideal: "environment" },
+  width: { ideal: 1920 },
+  height: { ideal: 1080 },
+  advanced: [
+    { focusMode: "continuous" },
+    { exposureMode: "continuous" },
+    { whiteBalanceMode: "continuous" }
+  ]
+},
     cameraPreview.srcObject = state.stream;
     emptyState.classList.add("hidden");
     resultCanvas.classList.add("hidden");
@@ -322,8 +325,8 @@ function detectDocumentBounds(canvas) {
 function enhanceImage(imageData) {
   const data = imageData.data;
   const mode = modeSelect.value;
-  const brightness = Number(controls.brightness.value);
-  const contrast = 1 + Number(controls.contrast.value) / 55;
+  const brightness = 15;
+  const contrast = 2.2;
   const threshold = Number(controls.threshold.value) / 100;
   const histogram = new Array(256).fill(0);
 
@@ -333,7 +336,7 @@ function enhanceImage(imageData) {
 
   const low = percentile(histogram, 0.04);
   const high = Math.max(low + 24, percentile(histogram, 0.96));
-  const cutoff = low + (high - low) * threshold;
+  const cutoff = low + (high - low) * 0.72;
 
   for (let i = 0; i < data.length; i += 4) {
     const gray = normalize(luma(data[i], data[i + 1], data[i + 2]), low, high);
