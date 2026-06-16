@@ -345,11 +345,12 @@ function enhanceImage(imageData) {
       data[i + 1] = ink;
       data[i + 2] = ink;
     } else if (mode === "paper") {
-      const paper = boosted > 210 ? 255 : boosted < cutoff ? boosted * 0.52 : boosted;
-      data[i] = clamp(paper + 5);
-      data[i + 1] = clamp(paper + 5);
-      data[i + 2] = clamp(paper + 5);
-    } else {
+  const paper = boosted > 170 ? 255 : boosted < cutoff ? 0 : 255;
+
+  data[i] = paper;
+  data[i + 1] = paper;
+  data[i + 2] = paper;
+} else {
       const clean = boosted > 224 ? 255 : boosted;
       const mix = 0.28;
       data[i] = clamp(data[i] * (1 - mix) + clean * mix + brightness);
